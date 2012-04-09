@@ -8,7 +8,7 @@
 	</condition>
 	<property name="web.path" value="WebContent"/>
 	<property name="temp.path" value="temp"/>
-	<property name="class" value="${web.path}/WEB-INF/classes"/>
+	<property name="class" value="${temp.path}/classes"/>
 	<property name="tarfile.name" value="KDJLib_SolrClient-${env.BUILD_NUMBER}"/>
 	<property name="jarfile.path" value="${temp.path}/${tarfile.name}.jar"/>
 	<property name="temp.lib.path" value="${temp.path}/${tarfile.name}_lib"/>
