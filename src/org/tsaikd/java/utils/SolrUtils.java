@@ -1,5 +1,6 @@
 package org.tsaikd.java.utils;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,11 +9,18 @@ import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.tsaikd.java.utils.ProcessEstimater;
 
 public class SolrUtils {
 
@@ -92,6 +100,16 @@ public class SolrUtils {
 	public static <T> void sync(String urlSrc, String urlTar, Class<T> docType, int syncRow) throws Exception {
 		String syncField = "solrIndexTime";
 		sync(urlSrc, urlTar, docType, syncRow, syncField);
+	}
+
+	public static String queryToString(HttpSolrServer solr, SolrQuery query) throws ClientProtocolException, IOException {
+		HttpClient client = new DefaultHttpClient();
+		HttpPost method = new HttpPost(solr.getBaseURL() + "/select/");
+
+		method.setEntity(new StringEntity(query.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
+		HttpResponse cliRes = client.execute(method);
+
+		return EntityUtils.toString(cliRes.getEntity(), "UTF-8");
 	}
 
 }
