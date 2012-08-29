@@ -7,20 +7,29 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.util.JSON;
 
 public class SolrUtils {
 
@@ -102,14 +111,46 @@ public class SolrUtils {
 		sync(urlSrc, urlTar, docType, syncRow, syncField);
 	}
 
-	public static String queryToString(HttpSolrServer solr, SolrQuery query) throws ClientProtocolException, IOException {
-		HttpClient client = new DefaultHttpClient();
-		HttpPost method = new HttpPost(solr.getBaseURL() + "/select/");
+	public static HttpEntity queryToEntity(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ClientProtocolException, IOException {
+		HttpClient client = solrServer.getHttpClient();
+		String solrUrl = solrServer.getBaseURL() + "/select/";
+		HttpPost method = new HttpPost(solrUrl);
 
+		if (log.isDebugEnabled()) {
+			log.debug(query.getQuery());
+			if (req != null) {
+				log.debug(ServletUtils.getRemoteRealIP(req) + ": " + solrUrl + "?" + query.toString());
+			}
+		}
 		method.setEntity(new StringEntity(query.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
 		HttpResponse cliRes = client.execute(method);
 
-		return EntityUtils.toString(cliRes.getEntity(), "UTF-8");
+		int status = cliRes.getStatusLine().getStatusCode();
+		if (status != HttpStatus.SC_OK) {
+			if (res != null) {
+				res.setStatus(status);
+			}
+		}
+
+		return cliRes.getEntity();
+	}
+
+	public static String queryToString(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ClientProtocolException, IOException {
+		HttpEntity entity = queryToEntity(req, res, solrServer, query);
+		return EntityUtils.toString(entity, "UTF-8");
+	}
+
+	public static BasicDBObject queryToDBObject(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ClientProtocolException, IOException {
+		String queryRes = queryToString(req, res, solrServer, query);
+		return (BasicDBObject) JSON.parse(queryRes);
+	}
+
+	public static void queryToServletOutput(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ServletException, IOException {
+		HttpEntity entity = queryToEntity(req, res, solrServer, query);
+		ServletOutputStream out = res.getOutputStream();
+		byte[] resData = EntityUtils.toByteArray(entity);
+		out.write(resData);
+		out.close();
 	}
 
 }

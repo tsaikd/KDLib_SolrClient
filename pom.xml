@@ -6,11 +6,11 @@
 		<version>LATEST</version>
 	</parent>
 	<artifactId>KDJLib_SolrClient</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.tsaikd.java</groupId>
-			<artifactId>KDJLib</artifactId>
+			<artifactId>KDJLib_Web</artifactId>
 			<version>LATEST</version>
 		</dependency>
 		<dependency>
@@ -22,6 +22,10 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>LATEST</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-servlet-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>
