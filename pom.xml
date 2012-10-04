@@ -6,7 +6,7 @@
 		<version>LATEST</version>
 	</parent>
 	<artifactId>KDJLib_SolrClient</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.tsaikd.java</groupId>
@@ -17,6 +17,12 @@
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
 			<version>LATEST</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
