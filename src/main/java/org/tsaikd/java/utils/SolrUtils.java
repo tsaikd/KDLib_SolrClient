@@ -27,13 +27,23 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.tsaikd.java.servlet.JSonOutput;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.util.JSON;
 
 public class SolrUtils {
 
 	static Log log = LogFactory.getLog(SolrUtils.class);
+
+	public static class SolrOutput extends JSonOutput {
+
+		public BasicDBObject response;
+
+		public BasicDBObject facet_counts;
+
+		public BasicDBObject responseHeader;
+
+	}
 
 	public static String getUrl(String url) {
 		if (url.startsWith("/")) {
@@ -140,9 +150,11 @@ public class SolrUtils {
 		return EntityUtils.toString(entity, "UTF-8");
 	}
 
-	public static BasicDBObject queryToDBObject(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ClientProtocolException, IOException {
+	public static SolrOutput queryToDBObject(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ClientProtocolException, IOException {
 		String queryRes = queryToString(req, res, solrServer, query);
-		return (BasicDBObject) JSON.parse(queryRes);
+		SolrOutput output = new SolrOutput();
+		output.fromJsonString(queryRes);
+		return output;
 	}
 
 	public static void queryToServletOutput(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ServletException, IOException {
