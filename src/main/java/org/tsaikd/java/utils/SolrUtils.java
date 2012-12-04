@@ -151,6 +151,7 @@ public class SolrUtils {
 	}
 
 	public static SolrOutput queryToDBObject(HttpServletRequest req, HttpServletResponse res, HttpSolrServer solrServer, SolrQuery query) throws ClientProtocolException, IOException {
+		query.set("wt", "json");
 		String queryRes = queryToString(req, res, solrServer, query);
 		SolrOutput output = new SolrOutput();
 		output.fromJsonString(queryRes);
