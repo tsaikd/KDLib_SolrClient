@@ -76,7 +76,7 @@ public class SolrUtils {
 		while (true) {
 			if (lastSync == null) {
 				query.setQuery("*:*");
-				query.setSortField(syncField, SolrQuery.ORDER.desc);
+				query.setSort(syncField, SolrQuery.ORDER.desc);
 				query.setRows(1);
 				res = solrTar.query(query);
 				list = res.getBeans(docType);
@@ -95,7 +95,7 @@ public class SolrUtils {
 				q = syncField + ":[" + fmtInput.format(lastSync) + " TO *]";
 			}
 			query.setQuery(q);
-			query.setSortField(syncField, SolrQuery.ORDER.asc);
+			query.setSort(syncField, SolrQuery.ORDER.asc);
 			query.setRows(syncRow);
 			res = solrSrc.query(query);
 			rest = res.getResults().getNumFound();
