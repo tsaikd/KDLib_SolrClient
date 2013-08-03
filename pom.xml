@@ -3,20 +3,20 @@
 	<parent>
 		<groupId>org.tsaikd.java</groupId>
 		<artifactId>KDJLib_parent</artifactId>
-		<version>LATEST</version>
+		<version>RELEASE</version>
 	</parent>
 	<artifactId>KDJLib_SolrClient</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.tsaikd.java</groupId>
 			<artifactId>KDJLib_Web</artifactId>
-			<version>LATEST</version>
+			<version>RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
-			<version>LATEST</version>
+			<version>RELEASE</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>zookeeper</artifactId>
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>LATEST</version>
+			<version>RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
